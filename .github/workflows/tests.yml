@@ -18,11 +18,20 @@ jobs:
           docker --version
           docker compose version
 
-      - name: Run tests
+      - name: Initialize submodules
         run: |
           git submodule init
           git submodule update
+
+      - name: Build and start containers
+        run: |
           docker compose up -d --build
           docker ps -a
+
+      - name: Wait for postgres
+        run: |
           sleep 20
+
+      - name: Run tests
+        run: |
           docker compose exec -T pg ./run_tests.sh
